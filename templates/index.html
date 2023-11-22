@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>XML to JSON Converter</title>
+
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+</head>
+<body>
+
+<header class="text-center">
+    <h1 class="text-center">XML to JSON Converter</h1>
+</header>
+
+<form id="convertForm" action="/convert" method="post" enctype="multipart/form-data">
+    {% if erreur %}
+    <div class="alert alert-danger">
+        <strong>Erreur!</strong>  {{ erreur }}
+    </div>
+    {% endif %}
+
+    <div class="container">
+        
+        <section class="column">
+            <textarea rows="20" class="form-control" name="xml_content" id="xmlContent" placeholder="Copy XML content here" required>{{ xml_content }}</textarea>
+        </section>
+        <section class="column">
+            <button class="btn btn-success btn-convert" type="submit">Convert</button>
+        </section>
+        <section class="column">
+            <textarea rows="20" class="form-control" name="json_data" id="jsonData" placeholder="Converted JSON will appear here">{{ json_data|default('') }}</textarea>
+        </section>
+    </div>
+</form>
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+
+</body>
+</html>
