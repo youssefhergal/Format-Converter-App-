@@ -11,6 +11,26 @@
 </head>
 <body>
 
+<nav class="navbar" style="background-color: #e3f2fd;">
+  <div class="container-fluid">
+    <a class="navbar-brand" href="#">Converter</a>
+    <ul class="nav justify-content-end">
+  <li class="nav-item">
+    <a class="nav-link active" href="#">Xml to </a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Yaml to</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#">Json to</a>
+  </li>
+  <li class="nav-item">
+    <a class="nav-link" href="#"></a>
+  </li>
+</ul>
+  </div>
+</nav>
+
 <header class="text-center">
     <h1 class="text-center">XML to JSON Converter</h1>
 </header>
@@ -23,15 +43,21 @@
     {% endif %}
 
     <div class="container">
-        
-        <section class="column">
-            <textarea rows="20" class="form-control" name="xml_content" id="xmlContent" placeholder="Copy XML content here" required>{{ xml_content }}</textarea>
+        <section class="column card">
+            <div class="card-header bg-primary text-white text-center card-style">Input </div>
+            <textarea rows="20" class="form-control card-body" name="xml_content" id="xmlContent" placeholder="Copy XML content here" required>{{ xml_content }}</textarea>
         </section>
+
         <section class="column">
             <button class="btn btn-success btn-convert" type="submit">Convert</button>
+            <br>
+            <label for="fileUpload" class="btn btn-primary btn-convert">Upload</label>
+            <input type="file" id="fileUpload" name="xml_file" style="display: none;" accept=".xml">
         </section>
-        <section class="column">
-            <textarea rows="20" class="form-control" name="json_data" id="jsonData" placeholder="Converted JSON will appear here">{{ json_data|default('') }}</textarea>
+
+        <section class="column card ">
+            <div class="card-header bg-primary text-white text-center card-style">Output</div>
+            <textarea rows="20" class="form-control card-body" name="json_data" id="jsonData" placeholder="Converted JSON will appear here">{{ json_data|default('') }}</textarea>
         </section>
     </div>
 </form>
@@ -39,6 +65,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
+<script src="/static/main.js"></script>
 
 </body>
 </html>
