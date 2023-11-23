@@ -8,6 +8,8 @@
 
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
+
 </head>
 <body>
 
@@ -44,7 +46,8 @@
 
     <div class="container">
         <section class="column card">
-            <div class="card-header bg-primary text-white text-center card-style">Input </div>
+            <div class="card-header bg-primary text-white text-center card-style">Input
+            </div>
             <textarea rows="20" class="form-control card-body" name="xml_content" id="xmlContent" placeholder="Copy XML content here" required>{{ xml_content }}</textarea>
         </section>
 
@@ -53,14 +56,43 @@
             <br>
             <label for="fileUpload" class="btn btn-primary btn-convert">Upload</label>
             <input type="file" id="fileUpload" name="xml_file" style="display: none;" accept=".xml">
+            <br>
+            <button class="btn btn-dark btn-convert btn-download" onclick="downloadJson()">Download
+                <i class="fa-solid fa-download"></i>
+            </button>
+            <br>
+            <button class="btn btn-danger btn-convert btn-delete" onclick="deleteInputs()">Delete &nbsp;
+               <i class="fa-solid fa-trash"></i>
+            </button>
+
+
         </section>
 
         <section class="column card ">
             <div class="card-header bg-primary text-white text-center card-style">Output</div>
             <textarea rows="20" class="form-control card-body" name="json_data" id="jsonData" placeholder="Converted JSON will appear here">{{ json_data|default('') }}</textarea>
+
         </section>
     </div>
 </form>
+
+<div class="modal fade" id="emptyOutputModal" tabindex="-1" role="dialog" aria-labelledby="emptyOutputModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="emptyOutputModalLabel">Erreur</h5>
+      </div>
+      <div class="modal-body">
+        L'output est vide.
+      </div>
+      <div class="modal-footer justify-content-center">
+        <button type="button" class="btn btn-secondary  btn-sm">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
