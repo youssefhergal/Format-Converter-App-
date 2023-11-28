@@ -1,103 +1,127 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>XML to JSON Converter</title>
 
+    <!-- External CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.0/css/all.min.css">
 
+    <!-- CodeMirror CSS and JS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/theme/dracula.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/hint/show-hint.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/fold/xml-fold.css">
+
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/codemirror.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/mode/xml/xml.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/edit/matchbrackets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/edit/closebrackets.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/hint/show-hint.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.1/addon/fold/xml-fold.js"></script>
 </head>
+
 <body>
 
-<nav class="navbar" style="background-color: #e3f2fd;">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">Converter</a>
-    <ul class="nav justify-content-end">
-  <li class="nav-item">
-    <a class="nav-link active" href="#">Xml to </a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Yaml to</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#">Json to</a>
-  </li>
-  <li class="nav-item">
-    <a class="nav-link" href="#"></a>
-  </li>
-</ul>
-  </div>
-</nav>
+    <!-- Navigation Bar -->
+    <nav class="navbar" style="background-color: #e3f2fd;">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Converter</a>
+            <ul class="nav justify-content-end">
+                <li class="nav-item">
+                    <a class="nav-link active" onclick="changeHeader('XML Converter')" href="#">Xml to </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link"  onclick="changeHeader('YAML Converter')" href="#">Yaml to</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" onclick="changeHeader('JSON Converter')" href="#">Json to</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="#"></a>
+                </li>
+            </ul>
+        </div>
+    </nav>
 
-<header class="text-center">
-    <h1 class="text-center">XML to JSON Converter</h1>
-</header>
+    <!-- Page Header -->
+    <header class="text-center">
+        <h1 class="text-center">XML to JSON Converter</h1>
+    </header>
 
-<form id="convertForm" action="/convert" method="post" enctype="multipart/form-data">
-    {% if erreur %}
-    <div class="alert alert-danger">
-        <strong>Erreur!</strong>  {{ erreur }}
-    </div>
-    {% endif %}
+    <!-- Conversion Form -->
+    <form id="convertForm"  action="/convert" method="post" enctype="multipart/form-data">
+{#        {% if erreur %}#}
+{#        <div class="alert alert-danger">#}
+{#            <strong>Erreur!</strong> {{ erreur }}#}
+{#        </div>#}
+{#        {% endif %}#}
 
-    <div class="container">
-        <section class="column card">
-            <div class="card-header bg-primary text-white text-center card-style">Input
+        <div class="container">
+            <!-- Input Section -->
+            <section class="column card">
+                <div class="card-header bg-primary text-white text-center card-style">Input</div>
+                <textarea rows="30"  class="form-control card-body" name="xml_content" id="xmlContent"
+                    placeholder="Copy XML content here" required>{{ xml_content }}</textarea>
+            </section>
+
+            <!-- Action Section -->
+            <section class="column">
+                <button class="btn btn-success btn-convert" type="submit">Convert</button>
+                <br>
+                <label for="fileUpload" class="btn btn-primary btn-convert">Upload</label>
+                <input type="file" id="fileUpload" name="xml_file" style="display: none;" accept=".xml">
+                <br>
+                <button id="fileDownload" class="btn btn-dark btn-convert btn-download">Download
+                    <i class="fa-solid fa-download"></i>
+                </button>
+                <br>
+                <button id="delete" class="btn btn-danger btn-convert btn-delete" >Delete &nbsp;
+                    <i class="fa-solid fa-trash"></i>
+                </button>
+            </section>
+
+            <!-- Output Section -->
+            <section class="column card ">
+                <div class="card-header bg-primary text-white text-center card-style">Output</div>
+                <textarea rows="25" class="form-control card-body" name="json_data" id="jsonData"
+                    placeholder="Converted JSON will appear here">{{ json_data|default('') }}</textarea>
+            </section>
+        </div>
+    </form>
+
+    <!-- Empty Output Modal -->
+    <div class="modal fade" id="emptyOutputModal" tabindex="-1" role="dialog" aria-labelledby="emptyOutputModalLabel"
+        aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="emptyOutputModalLabel">Erreur</h5>
+                </div>
+                <div class="modal-body">
+                    L'output est vide.
+                </div>
+                <div class="modal-footer justify-content-center">
+                    <button type="button" class="btn btn-secondary  btn-sm">Close</button>
+                </div>
             </div>
-            <textarea rows="20" class="form-control card-body" name="xml_content" id="xmlContent" placeholder="Copy XML content here" required>{{ xml_content }}</textarea>
-        </section>
-
-        <section class="column">
-            <button class="btn btn-success btn-convert" type="submit">Convert</button>
-            <br>
-            <label for="fileUpload" class="btn btn-primary btn-convert">Upload</label>
-            <input type="file" id="fileUpload" name="xml_file" style="display: none;" accept=".xml">
-            <br>
-            <button class="btn btn-dark btn-convert btn-download" onclick="downloadJson()">Download
-                <i class="fa-solid fa-download"></i>
-            </button>
-            <br>
-            <button class="btn btn-danger btn-convert btn-delete" onclick="deleteInputs()">Delete &nbsp;
-               <i class="fa-solid fa-trash"></i>
-            </button>
-
-
-        </section>
-
-        <section class="column card ">
-            <div class="card-header bg-primary text-white text-center card-style">Output</div>
-            <textarea rows="20" class="form-control card-body" name="json_data" id="jsonData" placeholder="Converted JSON will appear here">{{ json_data|default('') }}</textarea>
-
-        </section>
+        </div>
     </div>
-</form>
 
-<div class="modal fade" id="emptyOutputModal" tabindex="-1" role="dialog" aria-labelledby="emptyOutputModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="emptyOutputModalLabel">Erreur</h5>
-      </div>
-      <div class="modal-body">
-        L'output est vide.
-      </div>
-      <div class="modal-footer justify-content-center">
-        <button type="button" class="btn btn-secondary  btn-sm">Close</button>
-      </div>
-    </div>
-  </div>
-</div>
+    <!-- External JavaScript Libraries -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
 
-
-
-<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js"></script>
-<script src="/static/main.js"></script>
+    <!-- Custom JavaScript -->
+    <script src="/static/main.js"></script>
 
 </body>
+
 </html>
